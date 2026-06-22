@@ -108,11 +108,11 @@ export default {
   display: flex;
   flex-direction: column;
   background: #0f172a;
-  overflow-y: auto;
   flex-shrink: 0;
   width: 240px;
   transition: width 0.2s ease;
-  overflow: hidden;
+  overflow: visible;
+  z-index: 10;
 }
 
 .sidebar.collapsed {
@@ -226,5 +226,10 @@ export default {
 }
 .collapse-btn:hover {
   color: #94a3b8;
+}
+
+.sidebar.collapsed :deep(.profile-name),
+.sidebar.collapsed :deep(.chevron) {
+  display: none;
 }
 </style>
