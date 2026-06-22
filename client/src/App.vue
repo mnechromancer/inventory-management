@@ -1,6 +1,8 @@
 <template>
-  <div class="app-shell">
+  <div class="app-shell" :style="{ gridTemplateColumns: sidebarCollapsed ? '64px 1fr' : '240px 1fr' }">
     <AppSidebar
+      :collapsed="sidebarCollapsed"
+      @toggle-collapse="toggleSidebar"
       @show-profile-details="showProfileDetails = true"
       @show-tasks="showTasks = true"
     />
@@ -52,6 +54,8 @@ export default {
     const { t } = useI18n()
     const showProfileDetails = ref(false)
     const showTasks = ref(false)
+    const sidebarCollapsed = ref(false)
+    const toggleSidebar = () => { sidebarCollapsed.value = !sidebarCollapsed.value }
     const apiTasks = ref([])
 
     // Merge mock tasks from currentUser with API tasks
@@ -125,6 +129,8 @@ export default {
       t,
       showProfileDetails,
       showTasks,
+      sidebarCollapsed,
+      toggleSidebar,
       tasks,
       addTask,
       deleteTask,
@@ -153,6 +159,7 @@ body {
   display: grid;
   grid-template-columns: 240px 1fr;
   min-height: 100vh;
+  transition: grid-template-columns 0.2s ease;
 }
 
 .main-area {

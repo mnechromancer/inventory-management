@@ -1,9 +1,16 @@
 <template>
-  <aside class="sidebar">
+  <aside class="sidebar" :class="{ collapsed: collapsed }">
     <!-- Logo -->
     <div class="sidebar-logo">
-      <div class="logo-name">{{ t('nav.companyName') }}</div>
-      <div class="logo-sub">{{ t('nav.subtitle') }}</div>
+      <div class="logo-text" v-show="!collapsed">
+        <div class="logo-name">{{ t('nav.companyName') }}</div>
+        <div class="logo-sub">{{ t('nav.subtitle') }}</div>
+      </div>
+      <button class="collapse-btn" @click="$emit('toggle-collapse')" :title="collapsed ? 'Expand sidebar' : 'Collapse sidebar'">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <polyline :points="collapsed ? '9 18 15 12 9 6' : '15 18 9 12 15 6'"></polyline>
+        </svg>
+      </button>
     </div>
 
     <!-- Nav -->
@@ -17,13 +24,13 @@
         href="#"
       >
         <span class="nav-icon" v-html="item.icon"></span>
-        <span class="nav-label">{{ item.label || t(item.labelKey) }}</span>
+        <span v-show="!collapsed" class="nav-label">{{ item.label || t(item.labelKey) }}</span>
       </a>
     </nav>
 
     <!-- Footer -->
     <div class="sidebar-footer">
-      <LanguageSwitcher />
+      <LanguageSwitcher v-show="!collapsed" />
       <ProfileMenu
         @show-profile-details="$emit('show-profile-details')"
         @show-tasks="$emit('show-tasks')"
@@ -41,7 +48,13 @@ import LanguageSwitcher from './LanguageSwitcher.vue'
 export default {
   name: 'AppSidebar',
   components: { ProfileMenu, LanguageSwitcher },
-  emits: ['show-profile-details', 'show-tasks'],
+  props: {
+    collapsed: {
+      type: Boolean,
+      default: false
+    }
+  },
+  emits: ['show-profile-details', 'show-tasks', 'toggle-collapse'],
   setup() {
     const route = useRoute()
     const { t } = useI18n()
@@ -97,11 +110,24 @@ export default {
   background: #0f172a;
   overflow-y: auto;
   flex-shrink: 0;
+  width: 240px;
+  transition: width 0.2s ease;
+  overflow: hidden;
+}
+
+.sidebar.collapsed {
+  width: 64px;
 }
 
 .sidebar-logo {
   padding: 1.25rem 1rem 1rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  display: flex;
+  align-items: center;
+}
+
+.logo-text {
+  flex: 1;
 }
 
 .logo-name {
@@ -176,5 +202,29 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+
+/* When collapsed, center the icons */
+.sidebar.collapsed .nav-item {
+  justify-content: center;
+  padding: 0.6rem;
+  margin: 0 0.35rem;
+}
+
+/* Collapse button */
+.collapse-btn {
+  background: none;
+  border: none;
+  color: #475569;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  transition: color 0.15s;
+  margin-left: auto;
+}
+.collapse-btn:hover {
+  color: #94a3b8;
 }
 </style>
